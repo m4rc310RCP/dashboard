@@ -33,7 +33,9 @@ COPY --from=builder /app/dist .
 
 # Copie a configuração do Nginx
 COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
-
+# Crie o diretório de cache e defina as permissões
+RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx \
+    && chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx /usr/share/nginx/html
 
 # Adicione o usuário não-root se ele não existir
 RUN addgroup -S nginx || true && adduser -S nginx -G nginx || true
