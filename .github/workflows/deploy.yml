@@ -16,13 +16,17 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '22'
 
     - name: Install dependencies
       run: npm install
 
     - name: Run tests
       run: npm test
+
+    - name: Add Dokku host to known_hosts
+      run: |
+        ssh-keyscan -H $DOKKU_HOST >> ~/.ssh/known_hosts
 
     - name: Deploy to Dokku
       env:
