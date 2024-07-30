@@ -48,7 +48,7 @@ COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
 #USER nginx
 
 # Adicione a instrução HEALTHCHECK
-#HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:8080/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:8080/health || exit 1
 
 # Defina o comando de entrada do Nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
