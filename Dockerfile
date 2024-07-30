@@ -1,15 +1,21 @@
-FROM openjdk:17 AS openjdk
+FROM node:latest as builder
 
-FROM maven:3.8-openjdk AS build
+WORKDIR /app
+COPY package*.json ./
 
-WORKDIR /app/work/
-COPY pom.xml ./
-COPY src ./src
+RUN npm install -g pnpm
 
-RUN --mount=type=cache,target=/root/.m2  mvn clean package -Dmaven.test.skip
+RUN pnpm install && pnpm build
 
-FROM openjdk
-COPY --from=build /app/work/target/*-exec.jar /app/work/app.jar
+COPY . .
+
+RUN pnpm run build 
+#-------
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=builder /app/dist .
+COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "/app/work/app.jar"]
