@@ -1,24 +1,34 @@
-name: Deploy
+name: CI/CD Pipeline
 
-on: 
-  push: 
+on:
+  push:
     branches:
-      -master
+      - main
 
 jobs:
-  deploy:
-    name: Deploy
+  build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        user: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Deploy to dokku
-        uses: dokku
-        with:
-          ssh-private-key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
-          dokku-host: 'm4rc310.com.br'
-          app-name: 'dashboard'
-          git-push-flags: --force
 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Deploy to Dokku
+      env:
+        DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
+        DOKKU_APP: ${{ secrets.DOKKU_APP }}
+        DOKKU_USER: ${{ secrets.DOKKU_USER }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        ssh-agent bash -c "ssh-add <(echo \"$SSH_PRIVATE_KEY\") && git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP && git push dokku main"
