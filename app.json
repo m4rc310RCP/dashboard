@@ -1,5 +1,5 @@
 {
-  "name": "my-node-app",
+  "name": "dashboard",
   "scripts": {},
   "env": {},
   "formation": {
@@ -8,14 +8,17 @@
       "size": "1X"
     }
   },
+  "addons": [],
   "healthchecks": {
-    "web": {
-      "path": "/health",
-      "protocol": "http",
-      "port": 80,
-      "interval": 30,
-      "timeout": 5,
-      "retries": 3
-    }
+    "web": [
+      {
+        "path": "/health",
+        "protocol": "HTTP",
+        "port": 8080,
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3
+      }
+    ]
   }
 }
