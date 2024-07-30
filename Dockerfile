@@ -1,5 +1,5 @@
 # Etapa de construção (Builder Stage)
-FROM node:latest as builder
+FROM node:20 as builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN npm i -g pnpm
 
 # Utilize o cache para node_modules
 # A diretiva --mount=type=cache é específica do BuildKit
-RUN --mount=type=cache,target=/root/.pnpm-store pnpm install
+RUN --mount=type=cache,target=/root/.pnpm-store pnpm i
 
 # Copie o restante do código da aplicação
 COPY . .
@@ -33,6 +33,19 @@ COPY --from=builder /app/dist .
 
 # Copie a configuração do Nginx
 COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
+
+
+# Adicione o usuário não-root
+RUN addgroup -S nginx && adduser -S nginx -G nginx
+
+# Mude o proprietário dos arquivos para o usuário não-root
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
+# Defina o usuário não-root para executar a aplicação
+USER nginx
+
+# Adicione a instrução HEALTHCHECK
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:8080/health || exit 1
 
 # Defina o comando de entrada do Nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
