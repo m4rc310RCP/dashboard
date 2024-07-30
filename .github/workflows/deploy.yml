@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Deploy to dokku
-        uses: idoberko2/dokku-deploy-github-action@v1
+        uses: dokku
         with:
           ssh-private-key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
           dokku-host: 'm4rc310.com.br'
