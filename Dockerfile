@@ -35,8 +35,8 @@ COPY --from=builder /app/dist .
 COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
 
 
-# Adicione o usuário não-root
-RUN addgroup -S nginx && adduser -S nginx -G nginx
+# Adicione o usuário não-root se ele não existir
+RUN addgroup -S nginx || true && adduser -S nginx -G nginx || true
 
 # Mude o proprietário dos arquivos para o usuário não-root
 RUN chown -R nginx:nginx /usr/share/nginx/html
