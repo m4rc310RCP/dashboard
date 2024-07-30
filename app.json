@@ -1,0 +1,21 @@
+{
+  "name": "my-node-app",
+  "scripts": {},
+  "env": {},
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "1X"
+    }
+  },
+  "healthchecks": {
+    "web": {
+      "path": "/health",
+      "protocol": "http",
+      "port": 80,
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3
+    }
+  }
+}
