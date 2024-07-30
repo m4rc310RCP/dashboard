@@ -1,7 +1,7 @@
 FROM node:latest as builder
 
 WORKDIR /app
-COPY package*.json ./
+COPY . /app
 
 RUN npm install -g pnpm
 
