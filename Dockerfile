@@ -32,8 +32,9 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist .
 
 # Copie a configuração do Nginx
-COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
-# Crie o diretório de cache e defina as permissões
+COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
+
+# Crie os diretórios necessários e defina as permissões
 RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx \
     && chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx /usr/share/nginx/html
 
