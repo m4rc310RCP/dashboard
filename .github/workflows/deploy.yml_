@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run lint
+      run: npm run lint
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Print DOKKU_HOST
+      run: echo $DOKKU_HOST
+
+    - name: Ensure SSH directory exists
+      run: mkdir -p ~/.ssh
+
+    - name: Add Dokku host to known_hosts
+      run: |
+        ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
+
+    - name: Deploy to Dokku
+      env:
+        DOKKU_HOST: m4rc310.com.br
+        DOKKU_APP: dashboard
+        DOKKU_USER: dokku
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        ssh-agent bash -c "ssh-add <(echo \"$SSH_PRIVATE_KEY\") && git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP && git push dokku master"
