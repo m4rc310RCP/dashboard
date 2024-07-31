@@ -2,13 +2,32 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
 
 permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run lint
+      run: npm run lint
+
   build-and-deploy:
     runs-on: ubuntu-latest
 
