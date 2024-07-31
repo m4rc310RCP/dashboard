@@ -1,9 +1,8 @@
 name: ESLint 
-
 on:
   push:
-    tags:
-      - v*.*.*
+    branches:
+      - '**'
 
 permissions:
   contents: read
