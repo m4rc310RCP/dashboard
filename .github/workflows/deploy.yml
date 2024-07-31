@@ -9,25 +9,38 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0 
 
-    - name: Set up SSH
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Print DOKKU_HOST
+      run: echo $DOKKU_HOST
+
+    - name: Ensure SSH directory exists
+      run: mkdir -p ~/.ssh
+
+    - name: Add Dokku host to known_hosts
       run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.DOKKU_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Add remote
-      run: git remote add dokku dokku@${{ secrets.DOKKU_HOST }}:${{ secrets.DOKKU_APP }}
+        ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
 
     - name: Deploy to Dokku
-      run: git push dokku --tags
-      # Use the `--tags` option to push all tags to Dokku
+      env:
+        DOKKU_HOST: m4rc310.com.br
+        DOKKU_APP: dashboard
+        DOKKU_USER: dokku
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        ssh-agent bash -c "ssh-add <(echo \"$SSH_PRIVATE_KEY\") && git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP && git push dokku --tags"
