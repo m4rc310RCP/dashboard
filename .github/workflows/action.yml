@@ -19,11 +19,15 @@ jobs:
 
       - name: Push to dokku
         uses: dokku/github-action@master
+        with:
+          git_remote_url: ssh://dokku@m4rc310.com.br/dash
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Dokku
         env:
           DOKKU_HOST: m4rc310.com.br
           DOKKU_APP: dash
           DOKKU_USER: dokku
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          git_remote_url: ssh://dokku@m4rc310.com.br/dash
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          ssh-agent bash -c "ssh-add <(echo \"$SSH_PRIVATE_KEY\") && git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP && git push dokku master"
