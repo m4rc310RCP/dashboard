@@ -20,7 +20,7 @@ jobs:
           node-version: '22'
 
       - name: Ensure SSH directory exists
-      run: mkdir -p ~/.ssh
+        run: mkdir -p ~/.ssh
 
       - name: Add Dokku host to known_hosts
         run: |
