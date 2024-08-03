@@ -22,5 +22,5 @@ jobs:
         with:
           # specify the `main` branch as the remote branch to push to
           branch: main
-          git_remote_url: ssh://dokku@m4rc310.com.br/dash
+          git_remote_url: ssh://dokku@159.112.177.194/dash
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
