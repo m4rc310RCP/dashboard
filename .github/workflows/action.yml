@@ -1,51 +1,26 @@
-name: Deploy Action
+name: deploy
 
+# yamllint disable-line rule:truthy
 on:
   push:
     branches:
       - master
-
 permissions:
   contents: read
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Cloning repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22'
-
-      - name: Install dependencies
-        run: |
-          npm i -g pnpm
-          pnpm i
-
-      - name: Add Dokku host to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
-
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Push to dokku GALO
+      - name: Push to dokku
         uses: dokku/github-action@master
         with:
-          # specify `--force` as a flag for git pushes
-          git_push_flags: --force
+          # specify the `main` branch as the remote branch to push to
+          branch: main
           git_remote_url: ssh://dokku@m4rc310.com.br/dash
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      # - name: Push to dokku
-      #   run: |
-      #     git remote add dokku ssh://dokku@m4rc310.com.br/dash
-      #     git push dokku master:v0.0.9
