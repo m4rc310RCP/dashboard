@@ -42,7 +42,7 @@ RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx \
 RUN addgroup -S nginx || true && adduser -S nginx -G nginx || true
 
 # Mude o proprietário dos arquivos para o usuário não-root
-RUN chown -R nginx:nginx /usr/share/nginx/html
+RUN chown -R nginx:nginx /usr/share/nginx/html /var/run/
 
 # Defina o usuário não-root para executar a aplicação
 USER nginx
