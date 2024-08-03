@@ -31,3 +31,4 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP
+          git push dokku master
