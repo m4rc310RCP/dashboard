@@ -17,6 +17,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Add Dokku host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
+
       - name: Push to dokku
         uses: dokku/github-action@master
         with:
