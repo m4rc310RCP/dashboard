@@ -24,6 +24,15 @@ jobs:
           branch: main
           git_remote_url: ssh://dokku@159.112.177.194/dash
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+
+      - name: Ensure SSH directory exists
+        run: mkdir -p ~/.ssh
+
+      - name: Add Dokku host to known_hosts
+        run: |
+          ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
+
       - name: Push to dokku
         run: |
           git remote add dokku ssh://dokku@m4rc310.com.br/dash
