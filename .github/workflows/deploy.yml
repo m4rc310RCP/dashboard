@@ -2,8 +2,8 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*.*.*'
 
 permissions:
   contents: read
@@ -34,22 +34,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # - name: Generate Tag
-      #   id: tag
-      #   run: |
-      #     if [ -z "$(git tag)" ]; then
-      #       echo "No tags found, using default tag v0.0.1"
-      #       TAG="v0.0.1"
-      #     else
-      #       TAG=$(git describe --tags --abbrev=0)
-      #     fi
-      #     echo "tag=$TAG" >> $GITHUB_OUTPUT
-
-      - name: Get the expected tag from Dokku
+      - name: Get Tag Name
         id: tag
         run: |
-          EXPECTED_TAG="v0.0.8" # Defina manualmente ou obtenha de algum lugar
-          echo "tag=$EXPECTED_TAG" >> $GITHUB_OUTPUT
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
 
       - name: Add Dokku remote and push code
         env:
@@ -59,4 +48,4 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP
-          git push dokku master:${{ steps.tag.outputs.tag }}
+          git push dokku master:${{ steps.tag.outputs.tag_name }}
