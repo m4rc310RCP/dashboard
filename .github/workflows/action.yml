@@ -1,0 +1,29 @@
+name: Deploy Action
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Cloning repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push to dokku
+        uses: dokku/github-action@master
+        env:
+          DOKKU_HOST: m4rc310.com.br
+          DOKKU_APP: dash
+          DOKKU_USER: dokku
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          git_remote_url: 'ssh://$DOKKU_USER@$DOKKU_HOST/$DOKKU_APP'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
