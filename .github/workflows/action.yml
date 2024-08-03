@@ -30,4 +30,4 @@ jobs:
       - name: Push to dokku
         run: |
           git remote add dokku ssh://dokku@m4rc310.com.br/dash
-          git push dokku master:v0.0.8
+          git push dokku master:v0.0.9
