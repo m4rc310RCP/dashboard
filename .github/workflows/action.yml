@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+
 permissions:
   contents: read
 
@@ -24,7 +25,6 @@ jobs:
           branch: main
           git_remote_url: ssh://dokku@159.112.177.194/dash
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
 
       - name: Ensure SSH directory exists
         run: mkdir -p ~/.ssh
