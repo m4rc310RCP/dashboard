@@ -33,7 +33,11 @@ jobs:
         run: |
           ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
 
-      - name: Push to dokku
-        run: |
-          git remote add dokku ssh://dokku@m4rc310.com.br/dash
-          git push dokku master:v0.0.8
+    - name: Deploy to Dokku
+      env:
+        DOKKU_HOST: m4rc310.com.br
+        DOKKU_APP: dashboard
+        DOKKU_USER: dokku
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        ssh-agent bash -c "ssh-add <(echo \"$SSH_PRIVATE_KEY\") && git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP && git push dokku master"
