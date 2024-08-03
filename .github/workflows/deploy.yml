@@ -19,9 +19,6 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Ensure SSH directory exists
-        run: mkdir -p ~/.ssh
-
       - name: Add Dokku host to known_hosts
         run: |
           ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
@@ -34,7 +31,12 @@ jobs:
       - name: Generate Tag
         id: tag
         run: |
-          TAG=$(git describe --tags --abbrev=0)
+          if [ -z "$(git tag)" ]; then
+            echo "No tags found, using default tag v0.0.1"
+            TAG="v0.0.1"
+          else
+            TAG=$(git describe --tags --abbrev=0)
+          fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Add Dokku remote and push code
