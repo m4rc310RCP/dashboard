@@ -53,5 +53,6 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost
 # Defina o comando de entrada do Nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
+
 # Exponha a porta 8080
 EXPOSE 8080
