@@ -1,9 +1,12 @@
-name: Deploy to Dokku
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - master
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
@@ -44,8 +47,9 @@ jobs:
 
       - name: Add Dokku remote and push code
         env:
-          DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
-          DOKKU_APP: ${{ secrets.DOKKU_APP }}
+          DOKKU_HOST: m4rc310.com.br
+          DOKKU_APP: dash
+          DOKKU_USER: dokku
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP
