@@ -18,12 +18,13 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node.js
-          uses: actions/setup-node@v3
-          with:
-            node-version: '22'
-            
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
 
       - name: Add Dokku host to known_hosts
         run: |
