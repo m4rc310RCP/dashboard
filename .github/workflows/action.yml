@@ -38,6 +38,14 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Push to dokku
-        run: |
-          git remote add dokku ssh://dokku@m4rc310.com.br/dash
-          git push dokku master:v0.0.9
+        uses: dokku/github-action@master
+        with:
+          # specify `--force` as a flag for git pushes
+          git_push_flags: --force
+          git_remote_url: ssh://dokku@m4rc310.com.br/dash
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # - name: Push to dokku
+      #   run: |
+      #     git remote add dokku ssh://dokku@m4rc310.com.br/dash
+      #     git push dokku master:v0.0.9
