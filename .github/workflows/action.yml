@@ -22,18 +22,12 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H "m4rc310.com.br" >> ~/.ssh/known_hosts
 
-      - name: Push to dokku
-        uses: dokku/github-action@master
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          git_remote_url: ssh://dokku@m4rc310.com.br/dash
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Dokku
-        env:
-          DOKKU_HOST: m4rc310.com.br
-          DOKKU_APP: dash
-          DOKKU_USER: dokku
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Push to dokku
         run: |
-          git remote add dokku dokku@m4rc310.com.br:dash
+          git remote add dokku ssh://dokku@m4rc310.com.br/dash
           git push dokku master
