@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - v*.*.*
 
 permissions:
   contents: read
@@ -48,4 +48,4 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           git remote add dokku dokku@$DOKKU_HOST:$DOKKU_APP
-          git push dokku master:${{ steps.tag.outputs.tag_name }}
+          git push dokku ${{ steps.tag.outputs.tag_name }}:${{ steps.tag.outputs.tag_name }}
