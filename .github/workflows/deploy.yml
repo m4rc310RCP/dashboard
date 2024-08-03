@@ -34,16 +34,22 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Generate Tag
+      # - name: Generate Tag
+      #   id: tag
+      #   run: |
+      #     if [ -z "$(git tag)" ]; then
+      #       echo "No tags found, using default tag v0.0.1"
+      #       TAG="v0.0.1"
+      #     else
+      #       TAG=$(git describe --tags --abbrev=0)
+      #     fi
+      #     echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Get the expected tag from Dokku
         id: tag
         run: |
-          if [ -z "$(git tag)" ]; then
-            echo "No tags found, using default tag v0.0.1"
-            TAG="v0.0.1"
-          else
-            TAG=$(git describe --tags --abbrev=0)
-          fi
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          EXPECTED_TAG="v0.0.8" # Defina manualmente ou obtenha de algum lugar
+          echo "tag=$EXPECTED_TAG" >> $GITHUB_OUTPUT
 
       - name: Add Dokku remote and push code
         env:
