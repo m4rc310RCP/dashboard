@@ -25,5 +25,5 @@ jobs:
           DOKKU_USER: dokku
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
-          git_remote_url: 'ssh://dokku@m4rc310.com.br/dash'
+          git_remote_url: ssh://dokku@m4rc310.com.br/dash
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}

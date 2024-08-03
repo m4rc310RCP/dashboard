@@ -26,7 +26,7 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        Nova versão da Aplicação - V1
+        Nova versão da Aplicação - V1 --> 3
       </p>
     </>
   )
